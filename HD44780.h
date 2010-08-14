@@ -20,6 +20,7 @@
 #define RETURN_HOME     0x02
 #define DISPLAY_CONTROL 0x08
 #define FUNCTION_SET    0x20
+#define SET_CGRAM_ADDR  0x40
 #define SET_DDRAM_ADDR  0x80
 
 // flags
@@ -38,6 +39,7 @@ void lcd_command(unsigned char command);
 void lcd_data(unsigned char data);
 void lcd_write(const rom char * str);
 void lcd_goto(unsigned char row, unsigned char col);
+void lcd_add_character(unsigned char addr, unsigned char * pattern);
 
 // inline functions
 #define lcd_clear()         lcd_command(CLEAR_DISPLAY)

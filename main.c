@@ -18,16 +18,52 @@
 
 void main(void)
 {
+    unsigned char ghost1[8] = {
+        0b01110,
+    	0b11111,
+    	0b10101,
+    	0b11111,
+    	0b11111,
+    	0b10101,
+    	0b00000,
+    	0b00000
+    };
+
+    unsigned char ghost2[8] = {
+        0b00000,
+        0b01110,
+    	0b11111,
+    	0b10101,
+    	0b11111,
+    	0b11111,
+    	0b10101,
+    	0b00000
+    };
+
     // set ports as outputs
     TRISC = 0x00;
     TRISD = 0x00;
 
     lcd_initialize();
 
+    lcd_add_character(0, ghost1);
+    lcd_add_character(1, ghost2);
+
     lcd_goto(1, 5);
     lcd_write("Armandas");
-    lcd_goto(2, 1);
-    lcd_write("www.armandas.lt");
-    
-    while (1);  
+
+    while (1) {
+        lcd_goto(1,1);
+        lcd_data(0);
+        lcd_goto(1, 16);
+        lcd_data(1);
+        Delay10KTCYx(255);
+        Delay10KTCYx(255);
+        lcd_goto(1,1);
+        lcd_data(1);
+        lcd_goto(1, 16);
+        lcd_data(0);
+        Delay10KTCYx(255);
+        Delay10KTCYx(255);
+    }
 }

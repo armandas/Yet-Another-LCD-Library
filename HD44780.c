@@ -60,6 +60,15 @@ void lcd_goto(unsigned char row, unsigned char col)
     lcd_command(SET_DDRAM_ADDR | addr);
 }
 
+void lcd_add_character(unsigned char addr, unsigned char * pattern)
+{
+    int i;
+
+    lcd_command(SET_CGRAM_ADDR | addr << 3);
+    for (i = 0; i < 8; i++)
+        lcd_data(pattern[i]);
+}
+
 void lcd_initialize(void)
 {
     RS = 0;
