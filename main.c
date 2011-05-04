@@ -1,8 +1,12 @@
 #include <p18cxxx.h>
+#include <stdio.h>
+#include <delays.h>
 #include "HD44780.h"
 
+#define MENU_LENGTH     5
+
 #pragma config WDT = OFF
-#pragma config PLLDIV = 10
+#pragma config PLLDIV = 4
 #pragma config CPUDIV = OSC1_PLL2
 #pragma config USBDIV = 2
 #pragma config FOSC = HSPLL_HS
@@ -16,54 +20,98 @@
 
 /******************************************************************************/
 
+unsigned char menu(void);
+const rom char * menu_items[MENU_LENGTH] = {
+/*  v----LENGTH-----v  */
+    "Start Process  ",
+    "Info           ",
+    "Options        ",
+    "About          ",
+    "RTFM           "
+};
+
 void main(void)
 {
-    unsigned char ghost1[8] = {
-        0b01110,
-    	0b11111,
-    	0b10101,
-    	0b11111,
-    	0b11111,
-    	0b10101,
+    char buffer[LCD_CHARACTERS];
+
+    char item;
+
+    unsigned char degree[8] = {
+        0b01100,
+    	0b10010,
+    	0b10010,
+    	0b01100,
+    	0b00000,
+    	0b00000,
     	0b00000,
     	0b00000
     };
 
-    unsigned char ghost2[8] = {
+    unsigned char arrow[8] = {
         0b00000,
-        0b01110,
-    	0b11111,
-    	0b10101,
-    	0b11111,
-    	0b11111,
-    	0b10101,
+    	0b01000,
+    	0b01100,
+    	0b01110,
+    	0b01100,
+    	0b01000,
+    	0b00000,
     	0b00000
     };
 
+    // set RE2 as digital I/O
+    ADCON1 = 0x08;
+
     // set ports as outputs
     TRISC = 0x00;
-    TRISD = 0x00;
+    LCD_DATA_DDR = 0x00;
+    // tactile switch
+    TRISE = 0x04;
 
     lcd_initialize();
 
-    lcd_add_character(0, ghost1);
-    lcd_add_character(1, ghost2);
-
-    lcd_goto(1, 5);
-    lcd_write("Armandas");
+    lcd_add_character(1, degree);
+    lcd_add_character(2, arrow);
 
     while (1) {
-        lcd_goto(1,1);
-        lcd_data(0);
-        lcd_goto(1, 16);
-        lcd_data(1);
-        Delay10KTCYx(255);
-        Delay10KTCYx(255);
-        lcd_goto(1,1);
-        lcd_data(1);
-        lcd_goto(1, 16);
-        lcd_data(0);
-        Delay10KTCYx(255);
+        item = menu();
+        sprintf(buffer, "Selected item: %d", item);
+        lcd_goto(2, 1);
+        lcd_write(buffer);
+
+        while (PORTEbits.RE2 == 1);
         Delay10KTCYx(255);
     }
+}
+
+unsigned char menu(void)
+{
+    static unsigned char position = 0;
+    unsigned char item = 0;
+
+    unsigned char i;
+
+    if (position == MENU_LENGTH)
+        // reset position if the end of menu is reached
+        position = 0;
+
+    for (i = 0; i < LCD_LINES; i++) {
+        // set the line for item display
+        lcd_goto(i + 1, 1);
+
+        // enable continuous rotation of items
+        // i.e. item 1 follows the last item in the list
+        item = (position + i > MENU_LENGTH - 1) ? 0 : position + i;
+
+        if (i == 0)
+            // add an arrow to indicate current menu item
+            lcd_write_pgm("\002");
+        else
+            // add a space to keep items aligned
+            lcd_write_pgm(" ");
+
+        // display menu item
+        lcd_write_pgm(menu_items[item]);
+    }
+    // return current position and increment counter for the next call
+    return position++;
 }
