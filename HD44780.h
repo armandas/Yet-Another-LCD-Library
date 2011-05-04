@@ -3,7 +3,7 @@
 // number of lines on the LCD
 #define LCD_LINES           2
 #define LCD_CHARACTERS      16
-//#define LCD_HAS_BACKLIGHT
+//#define HAS_BACKLIGHT
 
 // data mask
 // this must match the data pins on the port
