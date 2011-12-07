@@ -113,6 +113,7 @@ void lcd_initialize(void) {
 /*        Low Level Functions          */
 /***************************************/
 void _send_nibble(unsigned char data) {
+	data |= data << 4;  		  // copy the data to the upper bits
     LCD_DATA &= ~DATA_MASK;       // clear old data bits
     LCD_DATA |= DATA_MASK & data; // put in new data bits
 
@@ -126,7 +127,7 @@ void _send_nibble(unsigned char data) {
 
 void _send_byte(unsigned char data) {
     _send_nibble(data >> 4);
-    _send_nibble(data);
+    _send_nibble(data & 0x0F);
 }
 
 void lcd_command(unsigned char command) {
