@@ -28,6 +28,13 @@
 #define LCD_BL        LATGbits.LATG4
 #endif
 
+// timings: depend on the instruction clock speed
+// these are values for a 48 MHz CPU clock
+#define LCD_ADDRESS_SETUP_DELAY() Nop()           // >40 ns
+#define LCD_ENABLE_PULSE_DELAY()  Delay10TCYx(1)  // >250 ns
+#define LCD_EXECUTION_DELAY()     Delay100TCYx(6) // >50 us
+#define LCD_HOME_CLEAR_DELAY()    Delay10KTCYx(2) // >1.6 ms
+
 /******************************* END OF CONFIG ********************************/
 
 // commands
@@ -70,8 +77,8 @@ void lcd_goto(unsigned char, unsigned char);
 void lcd_add_character(unsigned char, unsigned char *);
 
 // inline functions
-#define lcd_clear()         lcd_command(CLEAR_DISPLAY)
-#define lcd_return_home()   lcd_command(RETURN_HOME)
+#define lcd_clear()         lcd_command(CLEAR_DISPLAY); LCD_HOME_CLEAR_DELAY()
+#define lcd_return_home()   lcd_command(RETURN_HOME); LCD_HOME_CLEAR_DELAY()
 
 #define lcd_display_on()    lcd_flags_set(DISPLAY_CONTROL, DISPLAY_ON, 1)
 #define lcd_display_off()   lcd_flags_set(DISPLAY_CONTROL, DISPLAY_ON, 0)
