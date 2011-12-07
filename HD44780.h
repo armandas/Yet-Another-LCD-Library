@@ -3,7 +3,7 @@
 // number of lines on the LCD
 #define LCD_LINES           2
 #define LCD_CHARACTERS      16
-//#define HAS_BACKLIGHT
+//#define LCD_HAS_BACKLIGHT
 
 // data mask
 // this must match the data pins on the port
@@ -23,7 +23,7 @@
 #define LCD_EN          LATCbits.LATC2
 #define LCD_EN_DDR      TRISCbits.TRISC2
 
-#ifdef HAS_BACKLIGHT
+#ifdef LCD_HAS_BACKLIGHT
 #define LCD_BL_DDR    TRISGbits.TRISG4
 #define LCD_BL        LATGbits.LATG4
 #endif
@@ -83,7 +83,7 @@ void lcd_add_character(unsigned char, unsigned char *);
 #define lcd_blinking_on()   lcd_flags_set(DISPLAY_CONTROL, BLINKING_ON, 1)
 #define lcd_blinking_off()  lcd_flags_set(DISPLAY_CONTROL, BLINKING_ON, 0)
 
-#ifdef HAS_BACKLIGHT
+#ifdef LCD_HAS_BACKLIGHT
 #define lcd_backlight_on()  LCD_BL = 1
 #define lcd_backlight_off() LCD_BL = 0
 #endif

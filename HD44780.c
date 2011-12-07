@@ -75,7 +75,7 @@ void lcd_initialize(void) {
     LCD_RW_DDR = 0;
     LCD_EN_DDR = 0;
 
-    #ifdef HAS_BACKLIGHT
+    #ifdef LCD_HAS_BACKLIGHT
     LCD_BL_DDR = 0;
     #endif
 
@@ -94,7 +94,7 @@ void lcd_initialize(void) {
     lcd_flags_set(FUNCTION_SET, DATA_LENGTH | CHAR_FONT, 0);
     lcd_flags_set(FUNCTION_SET, DISPLAY_LINES, 1);
 
-    #ifdef HAS_BACKLIGHT
+    #ifdef LCD_HAS_BACKLIGHT
     lcd_backlight_on();
     #endif
     lcd_display_on();
