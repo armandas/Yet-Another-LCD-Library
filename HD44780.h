@@ -60,9 +60,6 @@
 
 
 // function prototypes
-void _send_nibble(unsigned char);
-void _send_byte(unsigned char);
-
 void lcd_flags_set(unsigned char, unsigned char, unsigned char);
 void lcd_initialize(void);
 void lcd_command(unsigned char);

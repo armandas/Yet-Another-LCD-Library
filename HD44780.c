@@ -1,6 +1,10 @@
 #include <delays.h>
 #include "HD44780.h"
 
+// private function prototypes
+void _send_nibble(unsigned char);
+void _send_byte(unsigned char);
+
 // global variables
 unsigned char display_config[6];
 
