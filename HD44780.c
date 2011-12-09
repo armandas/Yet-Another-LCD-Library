@@ -1,8 +1,38 @@
 #include <delays.h>
 #include "HD44780.h"
 
+// private function prototypes
+void _send_nibble(unsigned char);
+void _send_byte(unsigned char);
+void _set_4bit_interface();
+
 // global variables
 unsigned char display_config[6];
+
+// private utility functions
+void _send_nibble(unsigned char data) {
+    data |= data << 4;            // copy the data to the upper bits
+    LCD_DATA &= ~DATA_MASK;       // clear old data bits
+    LCD_DATA |= DATA_MASK & data; // put in new data bits
+
+    LCD_EN = 1;
+    LCD_ENABLE_PULSE_DELAY();
+    LCD_EN = 0;
+    LCD_ENABLE_PULSE_DELAY();
+}
+
+void _send_byte(unsigned char data) {
+    _send_nibble(data >> 4);
+    _send_nibble(data & 0x0F);
+}
+
+void _set_4bit_interface() {
+    LCD_RS = 0;
+    LCD_RW = 0;
+    LCD_ADDRESS_SETUP_DELAY();
+    _send_nibble(0b0010);
+    LCD_EXECUTION_DELAY();
+}
 
 /**
  * Display string stored in RAM
@@ -75,7 +105,7 @@ void lcd_initialize(void) {
     LCD_RW_DDR = 0;
     LCD_EN_DDR = 0;
 
-    #ifdef HAS_BACKLIGHT
+    #ifdef LCD_HAS_BACKLIGHT
     LCD_BL_DDR = 0;
     #endif
 
@@ -84,17 +114,13 @@ void lcd_initialize(void) {
         display_config[i] = 0x00;
     }
 
-    LCD_RS = 0;
-    LCD_RW = 0;
-
-    // set 4-bit mode
-    _send_nibble(0b0010);
+    _set_4bit_interface();
 
     // function set
     lcd_flags_set(FUNCTION_SET, DATA_LENGTH | CHAR_FONT, 0);
     lcd_flags_set(FUNCTION_SET, DISPLAY_LINES, 1);
 
-    #ifdef HAS_BACKLIGHT
+    #ifdef LCD_HAS_BACKLIGHT
     lcd_backlight_on();
     #endif
     lcd_display_on();
@@ -108,38 +134,20 @@ void lcd_initialize(void) {
     lcd_return_home();
 }
 
-
-/***************************************/
-/*        Low Level Functions          */
-/***************************************/
-void _send_nibble(unsigned char data) {
-    LCD_DATA &= ~DATA_MASK;       // clear old data bits
-    LCD_DATA |= DATA_MASK & data; // put in new data bits
-
-    // clock
-    Delay1KTCYx(1);
-    LCD_EN = 1;
-    Delay1KTCYx(1);
-    LCD_EN = 0;
-    Delay1KTCYx(1);
-}
-
-void _send_byte(unsigned char data) {
-    _send_nibble(data >> 4);
-    _send_nibble(data);
-}
-
 void lcd_command(unsigned char command) {
     LCD_RS = 0;
     LCD_RW = 0;
+    LCD_ADDRESS_SETUP_DELAY();
     _send_byte(command);
-    Delay10KTCYx(1);
+    LCD_EXECUTION_DELAY();
 }
 
 void lcd_data(unsigned char data) {
     LCD_RS = 1;
     LCD_RW = 0;
+    LCD_ADDRESS_SETUP_DELAY();
     _send_byte(data);
+    LCD_EXECUTION_DELAY();
 }
 
 void lcd_flags_set(unsigned char instruction,
