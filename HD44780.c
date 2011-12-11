@@ -11,7 +11,7 @@ unsigned char display_config[6];
 
 // private utility functions
 static void _send_nibble(unsigned char data) {
-    data |= data << 4;            // copy the data to the upper bits
+    data <<= DATA_SHIFT;          // shift the data as required
     LCD_DATA &= ~DATA_MASK;       // clear old data bits
     LCD_DATA |= DATA_MASK & data; // put in new data bits
 

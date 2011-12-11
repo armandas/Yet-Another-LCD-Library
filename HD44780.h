@@ -9,6 +9,11 @@
 // this must match the data pins on the port
 // this program uses 4 lower bits of PORT D
 #define DATA_MASK 0b00001111
+// if you don't use the lower four pins
+// for your data port, your data will have
+// to be shifted.
+// number of left shifts to do:
+#define DATA_SHIFT 0
 
 // pins
 #define LCD_DATA        LATD
