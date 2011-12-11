@@ -1,3 +1,18 @@
+/**
+ * Driver library for HD44780-compatible LCD displays.
+ * https://github.com/armandas/Yet-Another-LCD-Library
+ *
+ * Author: Armandas Jarusauskas (http://projects.armandas.lt)
+ *
+ * Contributors:
+ *    Sylvain Prat (https://github.com/sprat)
+ *
+ * This work is licensed under a
+ * Creative Commons Attribution 3.0 Unported License.
+ * http://creativecommons.org/licenses/by/3.0/
+ *
+ */
+
 #include <p18cxxx.h>
 #include <stdio.h>
 #include <delays.h>
