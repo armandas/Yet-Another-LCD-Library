@@ -2,15 +2,15 @@
 #include "HD44780.h"
 
 // private function prototypes
-void _send_nibble(unsigned char);
-void _send_byte(unsigned char);
-void _set_4bit_interface();
+static void _send_nibble(unsigned char);
+static void _send_byte(unsigned char);
+static void _set_4bit_interface();
 
 // global variables
 unsigned char display_config[6];
 
 // private utility functions
-void _send_nibble(unsigned char data) {
+static void _send_nibble(unsigned char data) {
     data |= data << 4;            // copy the data to the upper bits
     LCD_DATA &= ~DATA_MASK;       // clear old data bits
     LCD_DATA |= DATA_MASK & data; // put in new data bits
@@ -21,12 +21,12 @@ void _send_nibble(unsigned char data) {
     LCD_ENABLE_PULSE_DELAY();
 }
 
-void _send_byte(unsigned char data) {
+static void _send_byte(unsigned char data) {
     _send_nibble(data >> 4);
     _send_nibble(data & 0x0F);
 }
 
-void _set_4bit_interface() {
+static void _set_4bit_interface() {
     LCD_RS = 0;
     LCD_RW = 0;
     LCD_ADDRESS_SETUP_DELAY();
