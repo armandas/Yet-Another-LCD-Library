@@ -8,7 +8,7 @@ Contributors
 
 Thanks to people who have contributed to this project:
 
-  * Sylvain Prat (https://github.com/sprat)
+* Sylvain Prat (https://github.com/sprat)
 
 
 Links
@@ -16,8 +16,8 @@ Links
 
 I might have got some inspiration from the following sources:
 
-  * http://www.nongnu.org/avr-libc/user-manual/group__stdiodemo.html
-  * http://code.google.com/p/arduino/source/browse/trunk/libraries/LiquidCrystal/
+* http://www.nongnu.org/avr-libc/user-manual/group__stdiodemo.html
+* http://code.google.com/p/arduino/source/browse/trunk/libraries/LiquidCrystal/
 
 Licence
 =======
